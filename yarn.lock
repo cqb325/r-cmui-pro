@@ -2157,7 +2157,18 @@ echarts-for-react@^2.0.0:
   dependencies:
     element-resize-event "2.0.7"
 
-echarts@^3.8.5:
+echarts-liquidfill@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/echarts-liquidfill/-/echarts-liquidfill-1.1.1.tgz#2c8bb21ad8eeadde080f802d6bd4db5d21a5ed7d"
+  dependencies:
+    echarts ">=3.8.2"
+    zrender ">=3.7.2"
+
+echarts-wordcloud@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/echarts-wordcloud/-/echarts-wordcloud-1.1.3.tgz#07b140c8ba76b19c317b43c310f3d5dc99289ff2"
+
+echarts@>=3.8.2, echarts@^3.8.5:
   version "3.8.5"
   resolved "https://registry.yarnpkg.com/echarts/-/echarts-3.8.5.tgz#58e4a51d2743c6fb75257b0dc0a9cf9f5378ac0e"
   dependencies:
@@ -6964,6 +6975,6 @@ yargs@~3.10.0:
     decamelize "^1.0.0"
     window-size "0.1.0"
 
-zrender@3.7.4:
+zrender@3.7.4, zrender@>=3.7.2:
   version "3.7.4"
   resolved "https://registry.yarnpkg.com/zrender/-/zrender-3.7.4.tgz#f847d53948481ef6d42906d1ea9aeec7acbefdf2"

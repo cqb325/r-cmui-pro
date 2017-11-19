@@ -65,7 +65,7 @@ const config = {
         lib: [require.resolve('./polyfills'), 'react', 'react-dom',
             'react-router', 'moment', 'react-transition-group',
             'immutability-helper',
-            'babel-polyfill', 'store', 'immutable'
+            'babel-polyfill', 'store', 'immutable','echarts','echarts-for-react'
         ]
     },
     output: {
