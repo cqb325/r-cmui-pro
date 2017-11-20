@@ -464,9 +464,9 @@ export default class Analysis {
             this.time.add(1, 'minutes');
         }
 
-        // window.setInterval(() => {
-        //     this.updateEvaluationData();
-        // }, 1500);
+        window.setInterval(() => {
+            this.updateEvaluationData();
+        }, 1500);
     }
 
     @action

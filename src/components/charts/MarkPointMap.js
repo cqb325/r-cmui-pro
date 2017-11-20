@@ -18,31 +18,6 @@ class MarkPointMap extends React.PureComponent {
     }
 
     getLoadOption () {
-        // const data = [
-        //     {name: '上海', value: 25}
-        // ];
-        
-        // const geoCoordMap = {
-        //     '上海':[120,30]
-        // };
-        
-        // function convertData (data) {
-        //     const res = [];
-        //     for (let i = 0; i < data.length; i++) {
-        //         const geoCoord = geoCoordMap[data[i].name];
-        //         if (geoCoord) {
-        //             res.push({
-        //                 name: data[i].name,
-        //                 value: geoCoord.concat(data[i].value)
-        //             });
-        //         }
-        //     }
-        //     return res;
-        // }
-        
-        // function randomValue () {
-        //     return Math.round(Math.random() * 1000);
-        // }
         const option = {
             tooltip: {},
             visualMap: {

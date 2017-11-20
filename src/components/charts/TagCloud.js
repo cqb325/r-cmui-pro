@@ -27,6 +27,10 @@ class Chart extends React.Component {
         return this.chart.getEchartsInstance();
     }
 
+    shouldComponentUpdate () {
+        return false;
+    }
+
     getLoadOption () {
         return {
             series: [{
