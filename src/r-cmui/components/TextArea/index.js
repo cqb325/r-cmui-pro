@@ -64,7 +64,7 @@ class TextArea extends BaseComponent {
         height: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
     };
 
-    constructor(props) {
+    constructor (props) {
         super(props);
 
         this.addState({
@@ -73,7 +73,7 @@ class TextArea extends BaseComponent {
     }
 
     componentWillReceiveProps (nextProps) {
-        let value = nextProps.value;
+        const value = nextProps.value;
         if (value !== this.props.value && value !== this.state.value) {
             this.setState({ value });
         }
@@ -84,7 +84,7 @@ class TextArea extends BaseComponent {
      * @param  {[type]} event [description]
      * @return {[type]}       [description]
      */
-    handleChange = (event)=>{
+    handleChange = (event) => {
         this.props.autoHeight && this.autoHeight(event);
 
         const { trigger } = this.props;
@@ -93,7 +93,7 @@ class TextArea extends BaseComponent {
             return;
         }
 
-        let value = event.target.value;
+        const value = event.target.value;
 
         this.setState({ value });
 
@@ -102,17 +102,17 @@ class TextArea extends BaseComponent {
         }
     }
 
-    onBlur = (event)=>{
+    onBlur = (event) => {
         this.handleChange(event);
-        let value = event.target.value;
-        if(this.props.onChange){
+        const value = event.target.value;
+        if (this.props.onChange) {
             this.props.onChange(value, event);
         }
         this.emit('change', value, event);
     }
 
-    autoHeight(event){
-        let ele = event.target;
+    autoHeight (event) {
+        const ele = event.target;
         if (!this.initHeight) {
             this.initHeight = ele.clientHeight;
         }
@@ -120,42 +120,42 @@ class TextArea extends BaseComponent {
             ele.style.height = 'auto';
             ele.style.overflowY = 'hidden';
             ele.scrollTop = 0; // 防抖动
-            let pd = this.getPadding(ele);
-            ele.style.height = (ele.scrollHeight + pd) + 'px';
+            const pd = this.getPadding(ele);
+            ele.style.height = `${ele.scrollHeight + pd  }px`;
         }
     }
 
-    getPadding(ele){
-        let pdTop = parseFloat(Dom.css(ele, 'paddingTop'));
-        let pdBottom = parseFloat(Dom.css(ele, 'paddingBottom'));
-        let bdTop = parseFloat(Dom.css(ele, 'borderTopWidth'));
-        let bdBottom = parseFloat(Dom.css(ele, 'borderBottomWidth'));
+    getPadding (ele) {
+        const pdTop = parseFloat(Dom.css(ele, 'paddingTop'));
+        const pdBottom = parseFloat(Dom.css(ele, 'paddingBottom'));
+        const bdTop = parseFloat(Dom.css(ele, 'borderTopWidth'));
+        const bdBottom = parseFloat(Dom.css(ele, 'borderBottomWidth'));
 
         return pdTop + pdBottom + bdTop + bdBottom;
     }
 
-    handleTrigger(event){
-        let value = event.target.value;
+    handleTrigger (event) {
+        const value = event.target.value;
         if (this.props.onChange) {
             this.props.onChange(value, event);
         }
         this.emit('change', value);
     }
 
-    getValue(){
+    getValue () {
         return this.state.value;
     }
 
-    setValue(value){
+    setValue (value) {
         this.setState({ value });
     }
 
     render () {
         let {className, grid, trigger, style, height, width} = this.props;
-        let handleChange = this.props.handleChange
-            ? (event)=>{ this.props.handleChange(event, {component: this}); }
+        const handleChange = this.props.handleChange
+            ? (event) => { this.props.handleChange(event, {component: this}); }
             : this.handleChange.bind(this);
-        style = style || {};
+        style = Object.assign({}, style || {});
         if (height !== undefined && height !== null) {
             style['height'] = height;
         }
@@ -176,7 +176,7 @@ class TextArea extends BaseComponent {
             props.onBlur = this.onBlur;
         }
 
-        let others = filterProps(this.props);
+        const others = filterProps(this.props);
         delete others['data-valueType'];
 
         return (<textarea {...others} {...props} value={this.state.value} />);
