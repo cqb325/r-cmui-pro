@@ -15,6 +15,7 @@ import MessageBox from './components/MessageBox/index';
 import Dialog from './components/Dialog/index';
 import Notification from './components/Notification/index';
 import Input from './components/Input/index';
+import Search from './components/Search/index';
 import InputNumber from './components/InputNumber/index';
 import Select from './components/Select/index';
 import Switch from './components/Switch/index';
@@ -32,6 +33,7 @@ import Slick from './components/Slick/index';
 import Spin from './components/Spin/index';
 import Steps from './components/Steps/index';
 import Tab from './components/Tab/index';
+import Tabs from './components/Tab/tabs';
 import Table from './components/Table/index';
 import Toast from './components/Toast/index';
 import Progress from './components/Progress/index';
@@ -47,6 +49,7 @@ import DateTime from './components/DateTime/index';
 import DateRange from './components/DateRange/index';
 import Tree from './components/Tree/index';
 import Marqueen from './components/Marqueen/index';
+import Business from './components/Business/index';
 import './styles/theme.less';
 
 export {
@@ -64,6 +67,7 @@ export {
     Dialog,
     Notification,
     Input,
+    Search,
     InputNumber,
     CheckBox,
     CheckBoxGroup,
@@ -84,6 +88,7 @@ export {
     Spin,
     Steps,
     Tab,
+    Tabs,
     Table,
     Toast,
     Progress,
@@ -98,5 +103,6 @@ export {
     DateTime,
     DateRange,
     Tree,
-    Marqueen
+    Marqueen,
+    Business
 };

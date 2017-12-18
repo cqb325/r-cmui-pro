@@ -1,30 +1,32 @@
-export default async (url = '', data = {}, type = 'GET', fail) => {
+export default async (url = '', data = {}, type = 'GET', fail)=>{
     type = type.toUpperCase();
+    let dataStr = ''; //数据拼接字符串
+    Object.keys(data).forEach(key => {
+        dataStr += key + '=' + data[key] + '&';
+    });
+    dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'));
     if (type === 'GET') {
-        let dataStr = ''; // 数据拼接字符串
-        Object.keys(data).forEach(key => {
-            dataStr += `${key}=${data[key]}&`;
-        });
-
         if (dataStr !== '') {
-            dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'));
-            url = `${url}?${dataStr}`;
+            url = url + '?' + dataStr;
         }
     }
 
-    const requestConfig = {
+    let requestConfig = {
         method: type,
         headers: {
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         },
         mode: 'cors',
-        cache: 'force-cache'
+        cache: 'force-cache',
+        credentials: 'include'
     };
 
     if (type == 'POST') {
-        Object.defineProperty(requestConfig, 'body', {
-            value: JSON.stringify(data)
-        });
+        // Object.defineProperty(requestConfig, 'body', {
+        //     value: dataStr
+        // });
+        requestConfig.body = dataStr;
     }
     try {
         const response = await fetch(url, requestConfig);
@@ -32,7 +34,7 @@ export default async (url = '', data = {}, type = 'GET', fail) => {
         return responseJson;
     } catch (error) {
         console.error(error);
-        if (fail) {
+        if(fail) {
             fail(error);
         }
     }

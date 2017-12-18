@@ -12,6 +12,8 @@
         content: '*';
         color: red;
         margin-right: 3px;
+        position: relative;
+        top: 2px;
     }
   }
 }
@@ -21,9 +23,13 @@
   margin-bottom: 10px;
   margin-right: 10px;
 
-  .cm-form-group{
-    margin-bottom: 0!important;
-  }
+  // .cm-form-control,
+  // .cm-tooltip-helper{
+  //   width: 100%;
+  // }
+  // .cm-tooltip-helper{
+  //   display: block;
+  // }
 
   &.cm-form-group-invalid{
     .cm-form-control{
@@ -41,7 +47,10 @@
     .error-tip{
       display: none;
     }
-
+    .cm-tooltip-helper{
+      display: inline-block;
+    }
+    
     &.cm-form-group-invalid:hover{
       .error-tip{
         display: inline-block;
@@ -49,43 +58,29 @@
     }
   }
 
-  &.input-group {
+  .cm-formcontrol-label{
+    height: 28px;
+    line-height: 27px;
+  }
 
-    .input-group-addon {
-      display: inline-block;
-      padding: 4px 12px;
+  &.cm-form-group-stick {
+    .cm-form-label{
+      border: 1px solid #d9d9d9;
+      border-right: 0;
+      border-radius: 3px 0 0 3px;
+      font-size: 14px;
       height: 28px;
-      font-weight: 400;
-      line-height: normal;
-      color: #555;
-      text-align: center;
-      background-color: #eee;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-      width: auto;
-      vertical-align: initial;
-      &:first-child {
-        border-right: 0;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-      }
-      &:last-child {
-        border-left: 0;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
+      position: relative;
+      top: 1px;
+      line-height: 25px;
+      padding-left: 8px;
+      &.cm-form-label-required:before{
+        content: '';
+        margin-right: 0;
       }
     }
-    .cm-form-control:last-child{
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-    .cm-form-control:first-child{
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-
-    .cm-form-control:not(:first-child):not(:last-child){
-      border-radius: 0;
+    .cm-form-control{
+      border-radius: 0 3px 3px 0;
     }
   }
 }

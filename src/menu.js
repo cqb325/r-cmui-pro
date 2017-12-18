@@ -5,8 +5,9 @@ export default [
         {text: '工作台', link: 'dashboard/workbench'}
     ]},
     {text: '表单页', icon: 'th', children: [
-        {text: '基础表单', link: 'form/base'},
-        {text: '高级表单', link: 'form/advanced'}
+        {text: '基础表单', link: 'form/inline'},
+        {text: '高级表单', link: 'form/advanced'},
+        {text: '列表页面', link: 'form/listPage'}
     ]},
     {text: '系统监控', icon: 'code', children: [
         {text: '主机监控', link: 'monitor/host'}

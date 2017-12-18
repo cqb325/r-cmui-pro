@@ -7,6 +7,7 @@ import React from 'react';
 import BaseComponent from '../core/BaseComponent';
 import classNames from 'classnames';
 import Input from '../Input/index';
+import FormControl from '../FormControl/index';
 import './Spinner.less';
 
 /**
@@ -14,19 +15,17 @@ import './Spinner.less';
  * @class Spinner
  * @extends {BaseComponent}
  */
-class Spinner extends BaseComponent{
+class Spinner extends BaseComponent {
     static displayName = 'Spinner';
 
     static defaultProps = {
         value: 0,
-        min: 0,
-        max: 100,
         step: 1,
         size: 'default',
         loop: false
     };
 
-    constructor(props){
+    constructor (props) {
         super(props);
         this.addState({
             value: props.value
@@ -37,21 +36,25 @@ class Spinner extends BaseComponent{
      * 增加
      * @memberof Spinner
      */
-    plus = ()=>{
+    plus = () => {
         let value = this.add(this.state.value, this.props.step);
-        if(this.props.loop && value > this.props.max){
-            let off = value - this.props.max;
+        if (this.props.loop && this.props.max !== undefined && this.props.min !== undefined && value > this.props.max) {
+            const off = value - this.props.max;
             value = this.props.min + off - 1;
         }
-        value = Math.min(this.props.max, value);
+
+        if (this.props.max !== undefined) {
+            value = Math.min(this.props.max, value);
+        }
+        
         this.setState({value});
 
-        if(this.props.onChange){
+        if (this.props.onChange) {
             this.props.onChange(value);
         }
         this.emit('change', value);
 
-        if(this.props.onPlus){
+        if (this.props.onPlus) {
             this.props.onPlus(value, this.props.step);
         }
         this.emit('plus', this.props.step);
@@ -61,21 +64,24 @@ class Spinner extends BaseComponent{
      * 减少
      * @memberof Spinner
      */
-    sub = ()=>{
+    sub = () => {
         let value = this.add(this.state.value, -this.props.step);
-        if(this.props.loop && value < this.props.min){
-            let off = value - this.props.min;
+        if (this.props.loop && this.props.max !== undefined && this.props.min !== undefined && value < this.props.min) {
+            const off = value - this.props.min;
             value = this.props.max + off + 1;
         }
-        value = Math.max(this.props.min, value);
+        if (this.props.min !== undefined) {
+            value = Math.max(this.props.min, value);
+        }
+        
         this.setState({value});
 
-        if(this.props.onChange){
+        if (this.props.onChange) {
             this.props.onChange(value);
         }
         this.emit('change', value);
 
-        if(this.props.onSub){
+        if (this.props.onSub) {
             this.props.onSub(value, this.props.step);
         }
         this.emit('sub', this.props.step);
@@ -86,9 +92,9 @@ class Spinner extends BaseComponent{
      * @param {any} v 
      * @memberof Spinner
      */
-    setValue(v){
-        v = Math.min(v, this.props.max);
-        v = Math.max(v, this.props.min);
+    setValue (v) {
+        v = this.props.max !== undefined ? Math.min(v, this.props.max) : v;
+        v = this.props.min !== undefined ? Math.max(v, this.props.min) : v;
         this.setState({value: v});
     }
 
@@ -97,15 +103,15 @@ class Spinner extends BaseComponent{
      * @returns 
      * @memberof Spinner
      */
-    getValue(){
+    getValue () {
         return this.state.value;
     }
 
-    inputChange = (value)=>{
-        value = Math.min(value, this.props.max);
-        value = Math.max(value, this.props.min);
+    inputChange = (value) => {
+        value = this.props.max !== undefined ? Math.min(value, this.props.max) : value;
+        value = this.props.min !== undefined ? Math.max(value, this.props.min) : value;
         this.setState({value});
-        if(this.props.onChange){
+        if (this.props.onChange) {
             this.props.onChange(value);
         }
     }
@@ -115,7 +121,7 @@ class Spinner extends BaseComponent{
      * @param {[type]} num1 [description]
      * @param {[type]} num2 [description]
      */
-    add(num1, num2){
+    add (num1, num2) {
         let r1;
         let r2;
         let m;
@@ -134,31 +140,33 @@ class Spinner extends BaseComponent{
     }
 
     componentWillReceiveProps (nextProps) {
-        let value = nextProps.value;
+        const value = nextProps.value;
         if (value !== this.props.value && value !== this.state.value) {
             this.setState({ value });
         }
     }
 
-    render(){
+    render () {
         let {className} = this.props;
         className = classNames('cm-spinner', {
             [`cm-spinner-${this.props.size}`]: this.props.size
         });
         return (
-            <div className={className}>
-                <span className="cm-spinner-value">
-                    <Input name={this.props.name} value={this.state.value + ''} onChange={this.inputChange} />
+            <div className={className} style={this.props.style}>
+                <span className='cm-spinner-value'>
+                    <Input name={this.props.name} value={`${this.state.value}`} onChange={this.inputChange} />
                 </span>
-                <span className="cm-spinner-plus" onClick={this.plus}>
-                    <i className="fa fa-angle-up" />
+                <span className='cm-spinner-plus' onClick={this.plus}>
+                    <i className='fa fa-angle-up' />
                 </span>
-                <span className="cm-spinner-subs" onClick={this.sub}>
-                    <i className="fa fa-angle-down" />
+                <span className='cm-spinner-subs' onClick={this.sub}>
+                    <i className='fa fa-angle-down' />
                 </span>
             </div>
         );
     }
 }
+
+FormControl.register(Spinner, 'spinner');
 
 export default Spinner;

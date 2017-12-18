@@ -7,11 +7,9 @@ import React from 'react';
 import classNames from 'classnames';
 import BaseComponent from '../core/BaseComponent';
 import PropTypes from 'prop-types';
-import grids from '../utils/grids';
 import filterProps from 'react-valid-props';
 import Dom from '../utils/Dom';
 import FormControl from '../FormControl/index';
-const getGrid = grids.getGrid;
 import './TextArea.less';
 
 
@@ -37,7 +35,7 @@ class TextArea extends BaseComponent {
          * @attribute value
          * @type {String}
          */
-        value: PropTypes.string,
+        value: PropTypes.any,
         /**
          * 自定义class
          * @attribute className
@@ -64,18 +62,14 @@ class TextArea extends BaseComponent {
         height: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
     };
 
-    constructor (props) {
-        super(props);
-
-        this.addState({
-            value: props.value
-        });
-    }
+    state = {
+        _value: this.props.value || ''
+    };
 
     componentWillReceiveProps (nextProps) {
         const value = nextProps.value;
-        if (value !== this.props.value && value !== this.state.value) {
-            this.setState({ value });
+        if (value !== this.props.value && value !== this.state._value) {
+            this.setState({ _value: value });
         }
     }
 
@@ -84,7 +78,7 @@ class TextArea extends BaseComponent {
      * @param  {[type]} event [description]
      * @return {[type]}       [description]
      */
-    handleChange = (event) => {
+    onChange = (event) => {
         this.props.autoHeight && this.autoHeight(event);
 
         const { trigger } = this.props;
@@ -94,21 +88,22 @@ class TextArea extends BaseComponent {
         }
 
         const value = event.target.value;
+        
 
-        this.setState({ value });
-
-        if (trigger === 'change') {
-            this.handleTrigger(event);
+        if (trigger === event.type) {
+            if (this.props.onChange) {
+                this.props.onChange(value, event);
+            }
+            if (trigger === 'blur') {
+                if (this.props.onBlur) {
+                    this.props.onBlur(value, event);
+                    this.emit('blur', value, event);
+                }
+            }
+            this.emit('change', value, event);
         }
-    }
 
-    onBlur = (event) => {
-        this.handleChange(event);
-        const value = event.target.value;
-        if (this.props.onChange) {
-            this.props.onChange(value, event);
-        }
-        this.emit('change', value, event);
+        this.setState({_value: value});
     }
 
     autoHeight (event) {
@@ -121,7 +116,7 @@ class TextArea extends BaseComponent {
             ele.style.overflowY = 'hidden';
             ele.scrollTop = 0; // 防抖动
             const pd = this.getPadding(ele);
-            ele.style.height = `${ele.scrollHeight + pd  }px`;
+            ele.style.height = `${ele.scrollHeight + pd}px`;
         }
     }
 
@@ -134,27 +129,21 @@ class TextArea extends BaseComponent {
         return pdTop + pdBottom + bdTop + bdBottom;
     }
 
-    handleTrigger (event) {
-        const value = event.target.value;
-        if (this.props.onChange) {
-            this.props.onChange(value, event);
-        }
-        this.emit('change', value);
-    }
-
     getValue () {
-        return this.state.value;
+        return this.widget.value;
     }
 
     setValue (value) {
-        this.setState({ value });
+        this.setState({ _value: value });
+    }
+
+    getName () {
+        return this.props.name;
     }
 
     render () {
-        let {className, grid, trigger, style, height, width} = this.props;
-        const handleChange = this.props.handleChange
-            ? (event) => { this.props.handleChange(event, {component: this}); }
-            : this.handleChange.bind(this);
+        let {className, style, height, width} = this.props;
+
         style = Object.assign({}, style || {});
         if (height !== undefined && height !== null) {
             style['height'] = height;
@@ -162,24 +151,25 @@ class TextArea extends BaseComponent {
         if (width !== undefined && width !== null) {
             style['width'] = width;
         }
+
         const props = {
             className: classNames(
                 className,
                 'cm-form-control',
-                getGrid(grid)
+                {
+                    'cm-form-control-disabled': this.props.disabled
+                }
             ),
-            onChange: handleChange,
+            onChange: this.onChange,
             style
         };
 
-        if (trigger === 'blur') {
-            props.onBlur = this.onBlur;
-        }
+        props.onBlur = this.onChange;
 
         const others = filterProps(this.props);
         delete others['data-valueType'];
 
-        return (<textarea {...others} {...props} value={this.state.value} />);
+        return (<textarea ref={(f) => this.widget = f} {...others} {...props} value={this.state._value} />);
     }
 }
 

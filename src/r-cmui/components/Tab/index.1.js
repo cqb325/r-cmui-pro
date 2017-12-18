@@ -7,7 +7,6 @@ import React from 'react';
 import classNames from 'classnames';
 import BaseComponent from '../core/BaseComponent';
 import EnhancedButton from '../internal/EnhancedButton';
-import UUID from '../utils/UUID';
 import Item from './Item';
 import {List} from 'immutable';
 import './Tab.less';
@@ -26,13 +25,13 @@ class Tab extends BaseComponent {
         hasClose: false
     };
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
-        const data = this.prepare();
+        let data = this.prepare();
 
         this.addState({
-            data,
+            data: data,
             activeIndex: props.activeIndex
         });
     }
@@ -41,13 +40,13 @@ class Tab extends BaseComponent {
      * 准备工作，将孩子节点中Item抽取为data
      * @return {[type]} [description]
      */
-    prepare () {
-        const items = [];
-        React.Children.forEach(this.props.children, (child) => {
-            const componentName = child.type && child.type.displayName ? child.type.displayName : '';
-            if (componentName === 'Item') {
+    prepare(){
+        let items = [];
+        React.Children.forEach(this.props.children, (child)=>{
+            let componentName = child.type && child.type.displayName ? child.type.displayName : '';
+            if(componentName === 'Item'){
                 items.push({
-                    id: child.props.id || UUID.v4(),
+                    id: child.props.id,
                     text: child.props.title,
                     component: child,
                     data: child.props.data
@@ -55,19 +54,19 @@ class Tab extends BaseComponent {
             }
         });
         let data = this.props.data || [];
-        if (items.length) {
+        if(items.length){
             data = data.concat(items);
         }
 
         return data;
     }
 
-    _selectTab (item) {
+    _selectTab(item){
         if (!item.active) {
-            const data = this.state.data;
-            const index = data.indexOf(item);
+            let data = this.state.data;
+            let index = data.indexOf(item);
             item.active = true;
-            const last = this.state.activeIndex;
+            let last = this.state.activeIndex;
 
             data[last].active = false;
             this.emit('beforeSelect', item);
@@ -86,10 +85,10 @@ class Tab extends BaseComponent {
      * 根据索引选择tab
      * @param index {Number} 选择的索引
      */
-    selectByIndex (index) {
+    selectByIndex(index){
         if (index >= 0 && index < this.state.data.length) {
-            const data = this.state.data;
-            data.forEach((item, ind) => {
+            let data = this.state.data;
+            data.forEach((item, ind)=>{
                 if (ind !== index) {
                     item.active = false;
                 }
@@ -105,7 +104,7 @@ class Tab extends BaseComponent {
      * @param index
      * @returns {*}
      */
-    getItem (index) {
+    getItem(index){
         return this.state.data[index];
     }
 
@@ -113,7 +112,7 @@ class Tab extends BaseComponent {
      * 激活选项的索引
      * @return {[type]} [description]
      */
-    getActiveIndex () {
+    getActiveIndex(){
         return this.state.activeIndex;
     }
 
@@ -122,56 +121,56 @@ class Tab extends BaseComponent {
      * @method getActiveItem
      * @returns {*}
      */
-    getActiveItem () {
+    getActiveItem(){
         return this.state.data[this.state.activeIndex];
     }
 
-    _getHeader () {
-        const data = this.state.data;
-        const activeIndex = this.state.activeIndex;
-        return data.map(function (item, index) {
+    _getHeader(){
+        let data = this.state.data;
+        let activeIndex = this.state.activeIndex;
+        return data.map(function(item, index){
             if (activeIndex === index) {
                 item.active = true;
             }
 
-            const className = classNames({
+            let className = classNames({
                 active: item.active
             });
             return (
-                <li key={index} className={className} onClick={() => { this._selectTab(item); }}>
-                    {this.props.hasClose ? <a className='cm-tab-close' onClick={this._removeItem.bind(this, item)}>&times;</a> : null}
+                <li key={index} className={className} onClick={()=>{ this._selectTab(item); }}>
+                    {this.props.hasClose ? <a className="cm-tab-close" onClick={this._removeItem.bind(this, item)}>&times;</a> : null}
                     <EnhancedButton initFull touchRippleColor={'rgba(0, 0, 0, 0.1)'}>
-                        <a href='javascript:void(0)'>{item.text}</a>
+                        <a href="javascript:void(0)">{item.text}</a>
                     </EnhancedButton>
                 </li>
             );
         }, this);
     }
 
-    _getContent () {
-        const data = this.state.data;
-        const activeIndex = this.state.activeIndex;
+    _getContent(){
+        let data = this.state.data;
+        let activeIndex = this.state.activeIndex;
 
-        return data.map((item, index) => {
+        return data.map(function(item, index){
             if (activeIndex === index) {
                 item.active = true;
             }
 
-            const className = classNames('cm-tab-panel', {
+            let className = classNames('cm-tab-panel', {
                 active: item.active
             });
 
-            const component = item.component;
+            let component = item.component;
             let tabPanel = null;
             if (React.isValidElement(component)) {
-                const newProps = Object.assign({ref: item.id, data: item.data}, component.props, {key: UUID.v4()});
+                let newProps = Object.assign({ref: item.id, data: item.data}, component.props);
                 tabPanel = React.cloneElement(component, newProps);
             } else {
-                tabPanel = React.createElement(component, {ref: item.id, data: item.data, key: item.id});
+                tabPanel = React.createElement(component, {ref: item.id, data: item.data});
             }
 
             return (
-                <div key={UUID.v4()} className={className}>
+                <div key={index} className={className}>
                     {tabPanel}
                 </div>
             );
@@ -183,9 +182,9 @@ class Tab extends BaseComponent {
      * @param {[type]}  item     [description]
      * @param {Boolean} isActive 当前添加的激活
      */
-    add (item, isActive) {
-        if (React.isValidElement(item)) {
-            const data = {
+    add(item, isActive){
+        if(React.isValidElement(item)){
+            let data = {
                 id: item.props.id,
                 text: item.props.title,
                 data: item.props.data,
@@ -193,7 +192,7 @@ class Tab extends BaseComponent {
             };
 
             this.addItem(data, isActive);
-        } else {
+        }else{
             this.addItem(item, isActive);
         }
     }
@@ -203,11 +202,11 @@ class Tab extends BaseComponent {
      * @param {[type]}  item     [description]
      * @param {Boolean} isActive [description]
      */
-    addItem (item, isActive) {
+    addItem(item, isActive){
         let data = this.state.data;
         data = data.concat(item);
-        this.setState({data}, () => {
-            if (isActive) {
+        this.setState({data}, ()=>{
+            if(isActive){
                 this._selectTab(item);
             }
         });
@@ -218,38 +217,38 @@ class Tab extends BaseComponent {
      * @param  {[type]} item [description]
      * @return {[type]}      [description]
      */
-    remove (item) {
-        const data = this.state.data;
+    remove(item){
+        let data = this.state.data;
         let index = -1;
         let isActive = false;
-        if (typeof item === 'number') {
+        if(typeof item === 'number'){
             index = item;
             isActive = this.getItem(index).active;
-        } else {
+        }else{
             index = data.indexOf(item);
             isActive = item.active;
         }
 
         let shouldRemove = true;
-        if (this.props.onBeforeRemove) {
+        if(this.props.onBeforeRemove){
             shouldRemove = this.props.onBeforeRemove(index);
         }
 
-        if (shouldRemove && index > -1) {
-            const newData = List(data).delete(index).toJS();
-            this.setState({data: newData}, () => {
-                if (isActive) {
+        if(shouldRemove && index > -1){
+            let newData = List(data).delete(index).toJS();
+            this.setState({data: newData}, ()=>{
+                if(isActive){
                     this.selectByIndex(index - 1);
                 }
-                if (this.props.onRemove) {
+                if(this.props.onRemove){
                     this.props.onRemove(index);
                 }
             });
         }
     }
 
-    _removeItem (item, event) {
-        if (event.stopPropagation()) {
+    _removeItem(item, event){
+        if(event.stopPropagation()){
             event.stopPropagation();
         }
 
@@ -257,7 +256,7 @@ class Tab extends BaseComponent {
         return false;
     }
 
-    componentWillReceiveProps (nextProps) {
+    componentWillReceiveProps(nextProps){
         if (nextProps.activeIndex !== this.state.activeIndex && nextProps.activeIndex !== this.props.activeIndex) {
             this.setState({
                 activeIndex: nextProps.activeIndex
@@ -265,18 +264,18 @@ class Tab extends BaseComponent {
         }
     }
 
-    render () {
+    render(){
         let {className, style} = this.props;
         className = classNames('cm-tab', className);
 
-        const headers = this._getHeader();
-        const contents = this._getContent();
+        let headers = this._getHeader();
+        let contents = this._getContent();
         return (
             <div className={className} style={style}>
-                <ul className='cm-tab-header'>
+                <ul className="cm-tab-header">
                     {headers}
                 </ul>
-                <div className='cm-tab-content'>
+                <div className="cm-tab-content">
                     {contents}
                 </div>
             </div>

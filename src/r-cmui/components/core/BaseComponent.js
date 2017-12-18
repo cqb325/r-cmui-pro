@@ -3,7 +3,7 @@
  * @module BaseComponent
  */
 
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import Emitter from './Emitter';
 
 /**
@@ -13,7 +13,9 @@ import Emitter from './Emitter';
  * @extend Component
  * @extend Emitter
  */
-class BaseComponent extends Component {
+class BaseComponent extends PureComponent {
+    displayName = 'BaseComponent';
+    
     static defaultProps = {
         theme: 'default',
 
@@ -41,7 +43,7 @@ class BaseComponent extends Component {
         if (!this.state) {
             this.state = {};
         }
-        for (let i in params) {
+        for (const i in params) {
             if ({}.hasOwnProperty.call(params, i)) {
                 this.state[i] = params[i];
             }

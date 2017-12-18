@@ -1,40 +1,40 @@
 import substitute from './strings';
 
 
-let format = function(str){
-    return function() {
-        var args = Array.prototype.slice.call(arguments);
+const format = function (str) {
+    return function () {
+        const args = Array.prototype.slice.call(arguments);
         return substitute.apply(this, [str, args]);
     };
 };
 
-let Validation = {
+const Validation = {
     methods: {
-        required: function(value) {
+        required (value) {
             if (value === undefined || value === null) {
                 return false;
             }
             if (value instanceof Array) {
                 return value.length > 0;
             } else {
-                return (value + '').length > 0;
+                return (`${value}`).length > 0;
             }
         },
 
-        email: function(value) {
-            return new RegExp('^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?' +
-                '(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$').test(value);
+        email (value) {
+            return new RegExp('^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?'
+                + '(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$').test(value);
             // return /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?
             // (?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(value);
         },
 
-        url: function(value) {
-            return new RegExp('^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})' +
-                '(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])' +
-                '(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}' +
-                '(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)' +
-                '(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)' +
-                '(?::\d{2,5})?(?:[/?#]\S*)?$', 'i').test(value);
+        url (value) {
+            return new RegExp('^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})'
+                + '(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])'
+                + '(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}'
+                + '(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)'
+                + '(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)'
+                + '(?::\d{2,5})?(?:[/?#]\S*)?$', 'i').test(value);
             // return /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})
             // (?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])
             // (?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}
@@ -43,55 +43,59 @@ let Validation = {
             // (?::\d{2,5})?(?:[/?#]\S*)?$/i.test(value);
         },
 
-        minLength: function(value, param) {
-            var length = value ? value.length : 0;
+        minLength (value, param) {
+            const length = value ? value.length : 0;
             return length >= param;
         },
 
-        maxLength: function(value, param) {
-            var length = value ? value.length : 0;
+        maxLength (value, param) {
+            const length = value ? value.length : 0;
             return length <= param;
         },
 
-        min: function(value, param) {
+        min (value, param) {
             return value >= param;
         },
 
-        max: function(value, param) {
+        max (value, param) {
             return value <= param;
         },
 
-        range: function(value, param) {
+        range (value, param) {
             return value >= param[ 0 ] && value <= param[ 1 ];
         },
 
-        equalTo: function(value, param){
+        equalTo (value, param) {
             let target = param;
             if (typeof param === 'function') {
                 target = target();
             }
-            var targetValue = target.getValue ? target.getValue() : '';
+            const targetValue = target.getValue ? target.getValue() : '';
             return value === targetValue;
         },
 
-        price: function(value){
+        price (value) {
             return /^\d+(.\d{1,2})?$/.test(value);
         },
 
-        idCard: function(value){
+        idCard (value) {
             return /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value);
         },
 
-        noSpecial: function(value){
+        noSpecial (value) {
             return /^[\u4E00-\u9FA5A-Za-z0-9_&]+$/.test(value);
         },
 
-        userName: function(value){
+        userName (value) {
             return /^[\u4E00-\u9FA5A-Za-z0-9*]+$/.test(value);
         },
 
-        mobile: function(value){
+        mobile (value) {
             return /^1[3-8][0-9]{9}$/.test(value);
+        },
+        
+        ip (value) {
+            return /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/.test(value);
         },
 
         /**
@@ -100,10 +104,10 @@ let Validation = {
          * @param param
          * @returns {boolean}
          */
-        mixMaxLength: function(value, param){
+        mixMaxLength (value, param) {
             if (value !== '') {
-                var cn = value.match(/[\u4E00-\u9FA5A]/g);
-                var length = cn ? cn.length + value.length : value.length;
+                const cn = value.match(/[\u4E00-\u9FA5A]/g);
+                const length = cn ? cn.length + value.length : value.length;
                 return length <= param;
             } else {
                 return true;
@@ -111,7 +115,7 @@ let Validation = {
         }
     },
 
-    addMethod(name, method, message){
+    addMethod (name, method, message) {
         this.methods[name] = method;
         this.messages[name] = message !== undefined ? message : this.messages[name];
     },
@@ -132,6 +136,7 @@ let Validation = {
         userName: '只能输入汉字字母和数字',
         mobile: '请输入合法的手机号',
         remote: '请修正此字段',
+        ip: '填写正确的IP地址',
         mixMaxLength: format('不能超过{0}个字符')
     }
 };
