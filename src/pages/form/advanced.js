@@ -22,7 +22,7 @@ window.Validation.addMethod('domain', (value) => {
 class Advanced extends React.Component {
     displayName = 'Advanced';
 
-    saveURL = window.saveURL || 'http://192.168.105.202:8415/mock/ops-portal/success';
+    saveURL = window.saveURL || 'http://172.18.34.66:8415/mock/ops-portal/success';
 
     state = {
         advanced: false

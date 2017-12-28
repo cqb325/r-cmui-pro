@@ -4,6 +4,7 @@ import Card from 'r-cmui/components/Card';
 import Row from 'r-cmui/components/Row';
 import Col from 'r-cmui/components/Col';
 import Button from 'r-cmui/components/Button';
+import MessageBox from 'r-cmui/components/MessageBox';
 import Form from 'r-cmui/components/Form';
 import FormControl from 'r-cmui/components/FormControl';
 import moment from 'moment';
@@ -11,9 +12,12 @@ import 'r-cmui/components/Input';
 import 'r-cmui/components/DateRange';
 import 'r-cmui/components/TextArea';
 import 'r-cmui/components/RadioGroup';
+import { inject, observer } from 'mobx-react';
 
 import './styles.less';
 
+@inject('baseForm')
+@observer
 class BaseForm extends React.Component {
     displayName = 'BaseForm';
 
@@ -27,11 +31,16 @@ class BaseForm extends React.Component {
         this.form = ref;
     }
 
-    save = () => {
+    save = async () => {
         if (this.form.isValid()) {
             const params = this.form.getFormParams();
             console.log(params);
-            this.form.submit();
+            const ret = await this.props.baseForm.postData(params);
+            if (ret && ret.success) {
+                this.tip.show('保存成功');
+            } else {
+                this.tip.show('保存失败');
+            }
         }
     }
 
@@ -77,13 +86,13 @@ class BaseForm extends React.Component {
                                 </Row>
                             </Form>
                             <div className='mt-40 ml-40'>
-                                <Button theme='primary' className='mr-25' onClick={this.save}>保 存</Button>
+                                <Button theme='primary' className='mr-25' onClick={this.save} loadding={this.props.baseForm.isFething}>保 存</Button>
                                 <Button theme='default' className='ml-25'>取 消</Button>
                             </div>
                         </Col>
                     </Row>
 
-                    
+                    <MessageBox title='提示' ref={(f) => this.tip = f}/>
                 </Card>
             </div>
         );

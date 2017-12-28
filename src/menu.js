@@ -12,6 +12,10 @@ export default [
     {text: '系统监控', icon: 'code', children: [
         {text: '主机监控', link: 'monitor/host'}
     ]},
-    {text: '信用分', icon: 'futbol-o', link: 'xyf/index'},
-    {text: 'Profile', icon: 'futbol-o', link: 'profile/index'}
+    {
+        text: '第三方扩展', icon: 'cubes', children: [
+            {text: '节点管理', link: 'nodeManager/index'},
+            {text: '自定义Echarts', link: 'graph/index'}
+        ]
+    }
 ];

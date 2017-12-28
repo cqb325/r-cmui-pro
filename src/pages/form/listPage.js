@@ -15,10 +15,10 @@ import 'r-cmui/components/Select';
 class ListPage extends React.Component {
     displayName = 'ListPage';
 
-    serverListURL = window.serverList || 'http://192.168.105.202:8415/mock/cdn-ops/server/list';
-    agreeURL = window.agreeURL || 'http://192.168.105.202:8415/mock/ops-portal/success';
-    rejectURL = window.rejectURL || 'http://192.168.105.202:8415/mock/ops-portal/success';
-    offlineURL = window.offlineURL || 'http://192.168.105.202:8415/mock/ops-portal/success';
+    serverListURL = window.serverList || 'http://172.18.34.66:8415/mock/cdn-ops/server/list';
+    agreeURL = window.agreeURL || 'http://172.18.34.66:8415/mock/ops-portal/success';
+    rejectURL = window.rejectURL || 'http://172.18.34.66:8415/mock/ops-portal/success';
+    offlineURL = window.offlineURL || 'http://172.18.34.66:8415/mock/ops-portal/success';
 
     columns = [
         {name: 'name', text: '主机名称'},
@@ -50,7 +50,7 @@ class ListPage extends React.Component {
     getOps (row) {
         if (row.state == 'TOJOIN') {
             return <span>
-                <a href={`./details.html?id=${row.id}`} title='查看详情' className='mr-15 text-link' style={{fontSize: 16}}>
+                <a href='javascript:void(0)' title='查看详情' className='mr-15 text-link'>
                     <i className='fa fa-eye'></i>
                 </a>
                 <a href='javascript:void(0)' title='接受' className='mr-15 text-success' onClick={this.openAgreeConfirm.bind(this, row.id)}><i className='cmui cmui-success'></i></a>
@@ -59,10 +59,10 @@ class ListPage extends React.Component {
         }
         if (row.state == 'NORMAL') {
             return <span>
-                <a href={`./details.html?id=${row.id}`} title='查看详情' className='mr-15 text-link' style={{fontSize: 16}}>
+                <a href='javascript:void(0)' title='查看详情' className='mr-15 text-link'>
                     <i className='fa fa-eye'></i>
                 </a>
-                <a href='javascript:void(0)' title='下线' className='mr-5 text-danger' style={{fontSize: 16}} 
+                <a href='javascript:void(0)' title='下线' className='mr-5 text-danger' 
                     onClick={this.openOfflineConfirm.bind(this, row.id)}>
                     <i className='fa fa-arrow-circle-o-down'></i>
                 </a>
@@ -70,7 +70,7 @@ class ListPage extends React.Component {
         }
         if (row.state == 'OFFLINE' || row.state == 'ACCESSREJECT') {
             return <span>
-                <a href={`./details.html?id=${row.id}`} title='查看详情' className='mr-15 text-link' style={{fontSize: 16}}><i className='fa fa-eye'></i></a>
+                <a href='javascript:void(0)' title='查看详情' className='mr-15 text-link'><i className='fa fa-eye'></i></a>
             </span>;
         }
     }

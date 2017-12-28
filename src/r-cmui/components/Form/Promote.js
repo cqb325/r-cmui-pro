@@ -13,9 +13,7 @@ class Promote extends React.Component {
         const className = classNames('cm-form-promote', 'text-promote', this.props.className);
         const style = Object.assign({
             'paddingLeft': this.props.labelWidth,
-            'fontStyle': this.props.italic ? 'italic' : 'normal',
-            marginTop: -10,
-            marginBottom: 10
+            'fontStyle': this.props.italic ? 'italic' : 'normal'
         }, this.props.style);
         return <div className={className} style={style}>
             {this.props.children}

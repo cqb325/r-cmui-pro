@@ -93,15 +93,20 @@ class OrignAddress extends React.Component {
     changeIsMain = (item, value) => {
         item.isMain = value;
 
-        if (value) {
-            const data = this.state.data;
-            data.forEach((iter) => {
-                if (iter.id !== item.id) {
-                    iter.isMain = false;
-                }
-            });
-            this.setState({data});
+        const data = this.state.data;
+        let hasMain = false;
+        data.forEach((iter) => {
+            if (iter.id !== item.id) {
+                iter.isMain = false;
+            }
+            if (iter.isMain) {
+                hasMain = true;
+            }
+        });
+        if (!hasMain) {
+            data[0].isMain = true;
         }
+        this.setState({data});
     }
 
     removeItem = (item) => {

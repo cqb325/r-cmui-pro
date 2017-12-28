@@ -2164,6 +2164,10 @@ echarts-liquidfill@^1.1.1:
     echarts ">=3.8.2"
     zrender ">=3.7.2"
 
+echarts-stat@^1.1.0:
+  version "1.1.0"
+  resolved "http://registry.npm.taobao.org/echarts-stat/download/echarts-stat-1.1.0.tgz#bd04dc7e3901001808f13a30de85183bc168aaf4"
+
 echarts-wordcloud@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/echarts-wordcloud/-/echarts-wordcloud-1.1.3.tgz#07b140c8ba76b19c317b43c310f3d5dc99289ff2"
@@ -2503,6 +2507,10 @@ esutils@^2.0.2:
 etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
+
+eve-raphael@0.5.0:
+  version "0.5.0"
+  resolved "http://registry.npm.taobao.org/eve-raphael/download/eve-raphael-0.5.0.tgz#17c754b792beef3fa6684d79cf5a47c63c4cda30"
 
 event-emitter@~0.3.5:
   version "0.3.5"
@@ -5372,6 +5380,12 @@ randombytes@^2.0.0, randombytes@^2.0.1:
 range-parser@^1.0.3, range-parser@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.0.tgz#f49be6b487894ddc40dcc94a322f611092e00d5e"
+
+raphael@^2.2.7:
+  version "2.2.7"
+  resolved "http://registry.npm.taobao.org/raphael/download/raphael-2.2.7.tgz#231b19141f8d086986d8faceb66f8b562ee2c810"
+  dependencies:
+    eve-raphael "0.5.0"
 
 raw-body@2.3.2:
   version "2.3.2"
