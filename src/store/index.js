@@ -5,6 +5,7 @@ import Monitor from './monitor';
 import Dashboard from './dashboard';
 import Schedule from './schedule';
 import BaseForm from './baseForm';
+import ListPage from './listPage';
 
 const stores = {
     routing: routingStore,
@@ -12,7 +13,8 @@ const stores = {
     monitor: new Monitor(),
     dashboard: new Dashboard(),
     schedule: new Schedule(),
-    baseForm: new BaseForm()
+    baseForm: new BaseForm(),
+    listPage: new ListPage()
 };
 
 export default stores;
