@@ -11,6 +11,10 @@ export default [
         {text: '表格表单', link: 'form/tableForm'},
         {text: '分布表单', link: 'form/stepForm'}
     ]},
+    {text: '错误页', icon: 'exclamation-triangle', children: [
+        {text: '404', link: 'errors/error404'},
+        {text: '500', link: 'errors/error500'}
+    ]},
     {text: '系统监控', icon: 'code', children: [
         {text: '主机监控', link: 'monitor/host'}
     ]},
