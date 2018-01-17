@@ -4,15 +4,23 @@ import API from '../configs/api';
 
 useStrict(true);
 
+const sleep = function (time) {
+    return new Promise(((resolve) => {
+        setTimeout(() => {
+            // 返回 ‘ok’
+            resolve('ok');
+        }, time);
+    }));
+};
+
 class BaseForm {
     @observable isFething = false;
 
     async postData (params) {
         this.fetchBegin();
         const ret = await fetch(API.FORM.SAVE, params, 'post');
-        window.setTimeout(() => {
-            this.fetchDone();
-        }, 1000);
+        await sleep(1000);
+        this.fetchDone();
         return ret;
     }
 

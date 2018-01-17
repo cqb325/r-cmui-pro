@@ -9,16 +9,15 @@ import classNames from 'classnames';
 import BaseComponent from '../core/BaseComponent';
 import PropTypes from 'prop-types';
 import Core from '../core/Core';
-import fetch from '../utils/fetch';
 import clickAway from '../utils/ClickAway';
 import substitute from '../utils/strings';
 import Dom from '../utils/Dom';
 import Input from '../Input/index';
 import FormControl from '../FormControl/index';
-import grids from '../utils/grids';
+import Tags from '../Tag/Tags';
 import {fromJS} from 'immutable';
-const getGrid = grids.getGrid;
-import './Select.less';
+
+import './Suggest.less';
 
 class Option extends BaseComponent {
     static displayName = 'Option';
@@ -104,10 +103,17 @@ class Option extends BaseComponent {
      * @param {[type]} active [description]
      */
     setActive (active) {
-        this.setState({active});
+        if (this._isMounted) {
+            this.setState({active});
+        }
+    }
+
+    componentDidMount () {
+        this._isMounted = true;
     }
 
     componentWillUnmount () {
+        this._isMounted = false;
         const {itemUnBind} = this.props;
         if (itemUnBind) {
             itemUnBind(this.props.value);
@@ -142,13 +148,13 @@ class Option extends BaseComponent {
 }
 
 /**
- * Select 类
- * @class Select
+ * Suggest 类
+ * @class Suggest
  * @constructor
  * @extend BaseComponent
  */
-class Select extends BaseComponent {
-    static displayName = 'Select';
+class Suggest extends BaseComponent {
+    static displayName = 'Suggest';
     static defaultProps = {
         textField: 'text',
         valueField: 'id',
@@ -233,12 +239,11 @@ class Select extends BaseComponent {
         this.addState({
             value: props.value,
             active: props.active,
-            data,
-            filterKey: ''
+            data
         });
 
         this.options = {};
-        this.text = [];
+        this.selectItems = props.selectItems || {};
         this.lastSelectItem = null;
 
         this._selectItem = this._selectItem.bind(this);
@@ -319,17 +324,26 @@ class Select extends BaseComponent {
             'cm-select-placeholder': !values.length && this.props.placeholder
         });
         if (values.length) {
-            html = this.text;
+            html = this.getSelectedTexts();
+            html = <Tags data={html} closable onRemove={this.onRemove}/>;
         } else {
-            html.push(this.props.placeholder ? `${this.props.placeholder}&nbsp;` : '&nbsp;');
+            html = this.props.placeholder ? `${this.props.placeholder}` : '';
         }
-        html = `<div class="cm-select-value-text">${html.join(this.sep) || '&nbsp;'}</div>`;
 
-        html = `${html}<input type="hidden" class="${this.props.className || ''}" name="${ 
-            this.props.name || ''}" value="${this.state.value || ''}">`;
+        return (<span style={{maxWidth: this.props.maxWidth, minWidth: this.props.minWidth}} className={className} >
+            <div className='cm-select-value-text'>{html}&nbsp;</div>
+            <input type='hidden' className={this.props.className || ''} name={this.props.name} value={this.state.value} />
+        </span>);
+    }
 
-
-        return (<span style={{maxWidth: this.props.maxWidth, minWidth: this.props.minWidth}} className={className} dangerouslySetInnerHTML={{__html: html}} />);
+    onRemove = (item) => {
+        delete this.selectItems[item.id];
+        const value = this.getSelectedValues();
+        this.setState({value}, () => {
+            if (this.props.onChange) {
+                this.props.onChange(value);
+            }
+        });
     }
 
     _renderFilter () {
@@ -341,9 +355,6 @@ class Select extends BaseComponent {
     }
 
     filter = (e) => {
-        this.setState({
-            filterKey: e.target.value
-        });
         if (this.props.onFilter) {
             this.props.onFilter(e.target.value);
         }
@@ -365,19 +376,20 @@ class Select extends BaseComponent {
                 }
                 this.lastSelectItem = option;
                 this.hideOptions();
-                this.text = [];
             }
         } else {
             if (this.props.multi) {
+                if (!this.selectItems[option.getValue()]) {
+                    this.selectItems[option.getValue()] = option.getText();
+                }
                 value = this.getSelectedValues();
-                this.text = this.getDisplayText();
             } else {
                 value = option.getValue();
                 if (this.lastSelectItem) {
                     this.lastSelectItem.setActive(false);
                 }
                 this.lastSelectItem = option;
-                this.text = [option.getText()];
+                this.selectItems = [option.getText()];
                 this.hideOptions();
             }
         }
@@ -393,50 +405,31 @@ class Select extends BaseComponent {
         this.emit('change', value, option.props.item, option);
     }
 
-    /**
-     * 获取显示内容
-     * @return {[type]} [description]
-     */
-    getDisplayText () {
-        const text = [];
-        for (const value in this.options) {
-            const option = this.options[value];
-            if (option.isActive()) {
-                text.push(option.getText());
-            }
-        }
-        return text;
-    }
-
-    /**
-     * 获取选中的值
-     * @method getSelectedValues
-     * @returns {string}
-     */
-    getSelectedValues () {
-        const values = [];
-        for (const value in this.options) {
-            const option = this.options[value];
-            if (option.isActive()) {
-                values.push(option.getValue());
-            }
-        }
-        return values.join(this.sep);
-    }
-
     getValue () {
         return this.state.value;
     }
 
+    getSelectedValues () {
+        const vals = [];
+        for (const value in this.selectItems) {
+            vals.push(value);
+        }
+        return vals.join(',');
+    }
+
+    getSelectedTexts () {
+        const vals = [];
+        for (const value in this.selectItems) {
+            vals.push({id: value, text: this.selectItems[value]});
+        }
+        return vals;
+    }
+
     setValue (value) {
-        // let valueField = this.props.valueField;
-        // let options = this.options;
         if (value === null || value === undefined || value === '') {
-            this.text = [];
             this.setState({value});
         }
         if (value != undefined) {
-            this.text = this.getDisplayText();
             this.setState({value: `${value}`});
         }
     }
@@ -464,12 +457,10 @@ class Select extends BaseComponent {
                 show={true}
                 onClick={this._selectItem}>{choiceText}</Option>);
         }
-        this.text = [];
         data.forEach((item) => {
             const text = item[textField];
             const value = `${item[valueField]}`;
             const active = this.isActive(value);
-            const show = text !== undefined ? `${text}`.indexOf(this.state.filterKey) !== -1 : true;
 
             let html = text;
             if (optionsTpl) {
@@ -482,16 +473,12 @@ class Select extends BaseComponent {
                 value={value}
                 item={item}
                 multi={multi}
-                show={show}
+                show={true}
                 itemBind={this.itemBind}
                 itemUnBind={this.itemUnBind}
                 onClick={this._selectItem}
                 active={active}
             />);
-
-            if (active) {
-                this.text.push(html);
-            }
         });
 
         return ret;
@@ -505,43 +492,6 @@ class Select extends BaseComponent {
     isActive (value) {
         const vs = this.state.value ? (`${this.state.value}`).split(this.sep) : [];
         return vs.indexOf(value) !== -1;
-    }
-
-    /**
-     * 渲染子元素
-     * @return {[type]} [description]
-     */
-    getChildrenOptions () {
-        this.text = [];
-        return React.Children.map(this.props.children, (child) => {
-            const componentName = child.type && child.type.displayName ? child.type.displayName : '';
-            if (componentName === 'Option') {
-                const value = child.props.value;
-                const active = this.isActive(value);
-                const show = child.props.children.indexOf(this.state.filterKey) !== -1;
-                if (active) {
-                    this.text.push(child.props.children);
-                }
-                const props = Object.assign({}, child.props, {
-                    itemBind: this.itemBind,
-                    itemUnBind: this.itemUnBind,
-                    active,
-                    multi: this.props.multi,
-                    onClick: this._selectItem,
-                    key: value,
-                    show
-                });
-                if (this.props.multi && child.props.empty) {
-                    return null;
-                }
-                if (child.props.empty) {
-                    props.value = '___empty';
-                }
-                return React.cloneElement(child, props);
-            } else {
-                return child;
-            }
-        });
     }
 
     /**
@@ -561,6 +511,9 @@ class Select extends BaseComponent {
             return;
         }
         if (this.props.filter && e.target == ReactDOM.findDOMNode(this.filterInputField)) {
+            return;
+        }
+        if (Dom.closest(e.target, '.cm-tag')) {
             return;
         }
         if (this.state.active && !this.props.multi) {
@@ -673,37 +626,8 @@ class Select extends BaseComponent {
         });
     }
 
-    /**
-     * 加载远程数据
-     * @param  {[type]}  url [description]
-     * @return {Promise}     [description]
-     */
-    async loadFromRemote (url) {
-        const data = await fetch(url);
-        this.setData(data);
-
-        if (this.props.onDataLoaded) {
-            this.props.onDataLoaded();
-        }
-        this.emit('dataLoaded');
-    }
-
-    componentWillMount () {
-        if (this.props.url) {
-            this.loadFromRemote(this.props.url);
-        }
-    }
-
     componentDidMount () {
         this._isMounted = true;
-        if (!this.props.multi) {
-            for (const value in this.options) {
-                const option = this.options[value];
-                if (option.isActive()) {
-                    this.lastSelectItem = option;
-                }
-            }
-        }
     }
 
     componentWillUnmount () {
@@ -719,7 +643,7 @@ class Select extends BaseComponent {
 
     render () {
         let {className, style, grid, multi} = this.props;
-        className = classNames('cm-select', getGrid(grid), {
+        className = classNames('cm-select', {
             'cm-select-active': this.state.active,
             'cm-select-disabled': this.state.disabled,
             'cm-select-dropup': this.state.dropup,
@@ -727,7 +651,6 @@ class Select extends BaseComponent {
         });
 
         const filter = this._renderFilter();
-        const childrenOptions = this.getChildrenOptions();
         const options = this._renderOptions();
         const text = this._renderValues();
         return (
@@ -737,7 +660,7 @@ class Select extends BaseComponent {
                 <div className='cm-select-options-wrap'>
                     <div ref='options' className='cm-select-options'>
                         {filter}
-                        <ul>{childrenOptions}{options}</ul>
+                        <ul>{options}</ul>
                     </div>
                 </div>
             </div>
@@ -745,10 +668,10 @@ class Select extends BaseComponent {
     }
 }
 
-clickAway(Select);
+clickAway(Suggest);
 
-Select.Option = Option;
+Suggest.Option = Option;
 
-FormControl.register(Select, 'select');
+FormControl.register(Suggest, 'suggest');
 
-export default Select;
+export default Suggest;
