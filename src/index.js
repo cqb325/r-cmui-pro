@@ -11,20 +11,18 @@ import {createHashHistory} from 'history';
 import { Provider } from 'mobx-react';
 import { syncHistoryWithStore } from 'mobx-react-router';
 import { HashRouter as Router } from 'react-router-dom';
-import App from './App';
 import stores from './store/index';
+import {AppRoute} from './routers';
 import 'r-cmui/styles/theme.less';
 import 'r-cmui/styles/font-awesome.min.css';
-import './index.less';
 
 const browserHistory = createHashHistory();
 
 syncHistoryWithStore(browserHistory, stores.routing);
-
 ReactDOM.render(
     <Provider {...stores}>
         <Router>
-            <App />
+            {AppRoute}
         </Router>
     </Provider>,
     document.getElementById('root')

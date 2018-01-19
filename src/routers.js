@@ -4,6 +4,8 @@ import { Route } from 'react-router-dom';
 
 const routers = [];
 
+const APP = asyncComponent(() => import('./App'));
+
 const DashboardAnalysis = asyncComponent(() => import('./pages/dashboard/analysis'));
 const DashboardMonitor = asyncComponent(() => import('./pages/dashboard/monitor'));
 const DashboardWorkbench = asyncComponent(() => import('./pages/dashboard/workbench'));
@@ -18,6 +20,10 @@ const Error500 = asyncComponent(() => import('./pages/errors/error500'));
 const MonitorHost = asyncComponent(() => import('./pages/monitor/host'));
 const NodeManager = asyncComponent(() => import('./pages/nodeManager/index'));
 const Graph = asyncComponent(() => import('./pages/graph/index'));
+const Login = asyncComponent(() => import('./pages/login/index'));
+export const Register = asyncComponent(() => import('./pages/register/index'));
+
+export const AppRoute = <Route key='app' path='/' component={APP} />;
 
 routers.push(<Route key='analysis' path='/dashboard/analysis' component={DashboardAnalysis} />);
 routers.push(<Route key='monitor' path='/dashboard/monitor' component={DashboardMonitor} />);
@@ -34,5 +40,8 @@ routers.push(<Route key='Error500' path='/errors/error500' component={Error500} 
 routers.push(<Route key='list' path='/monitor/host' component={MonitorHost} />);
 routers.push(<Route key='futbol-o' path='/nodeManager/index' component={NodeManager} />);
 routers.push(<Route key='graph' path='/graph/index' component={Graph} />);
+routers.push(<Route key='login' path='/login' component={Login} />);
+
+// export const LoginRoute = <Route key='login' path='/login' component={Login} />;
 
 export default routers;

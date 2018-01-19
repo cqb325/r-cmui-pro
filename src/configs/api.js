@@ -18,5 +18,19 @@ export default {
         OFFLINE: 'http://172.18.34.66:8415/mock/ops-portal/success',
         SAVE_HOST: 'http://172.18.34.66:8415/mock/ops-portal/success',
         GET_HOST: 'http://172.18.34.66:8415/mock/ops-portal/success'
+    },
+    USER: {
+        LOGIN: 'http://localhost:1204/admin/login',
+        CHECK: 'http://localhost:1204/admin/checkLogin',
+        LOGOUT: 'http://localhost:1204/admin/logout'
     }
+};
+
+export const sleep = function (time) {
+    return new Promise(((resolve) => {
+        setTimeout(() => {
+            // 返回 ‘ok’
+            resolve('ok');
+        }, time);
+    }));
 };

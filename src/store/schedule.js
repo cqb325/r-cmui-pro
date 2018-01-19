@@ -17,7 +17,7 @@ export default class Schedule {
 
     async fetchScheduleData (taskId) {
         const ret = await fetch(API.SCHEDULE.GETSCHEDULE, {taskId});
-        this.setScheduleData(ret);
+        this.setScheduleData(ret.data);
     }
 
     async putNode (node, callback) {
