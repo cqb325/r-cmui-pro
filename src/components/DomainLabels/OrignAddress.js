@@ -34,7 +34,7 @@ class OrignAddress extends React.Component {
         return data.map((item) => {
             const text = item.isMain ? '主站' : '备站';
             return <div key={item.id}>
-                <FormControl type='label' value={this.type[item.type]} style={{width: 50, textAlign: 'right'}}/>
+                <FormControl type='label' value={this.type[item.type]} style={{width: 38, textAlign: 'right'}}/>
                 <FormControl type='label'
                     name='domain'
                     className='ml-15'

@@ -40,7 +40,7 @@ class Comp extends React.Component {
         return (
             <div style={{width: 400, height: 300}}>
                 <Form ref={(f) => this.form = f} labelWidth={80} layout='stack-inline' data={this.props.data}>
-                    <FormControl name='name' type='hidden' ref={(f) => this.name = f}/>
+                    <FormControl name='jobName' type='hidden' ref={(f) => this.name = f}/>
                     <FormControl onChange={this.changeJob} name='jobId' textField='name' label='选择Job' type='select' filter url={API.SCHEDULE.JOBLIST} required/>
                     <FormControl name='desc' label='描述' type='textarea' required height={80}/>
                     <FormControl name='parameters' label='参数' placeholder='只能输入英文逗号做间隔' type='textarea' height={80} rules={{englishOnly: true}}/>

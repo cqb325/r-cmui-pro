@@ -429,7 +429,7 @@ class Page extends Component {
             if (item != node) {
                 nodes.push({
                     id: item.id,
-                    text: item.name
+                    text: item.jobName
                 });
             }
         });
