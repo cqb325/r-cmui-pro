@@ -22,7 +22,11 @@ export default {
     USER: {
         LOGIN: 'http://localhost:1204/admin/login',
         CHECK: 'http://localhost:1204/admin/checkLogin',
-        LOGOUT: 'http://localhost:1204/admin/logout'
+        LOGOUT: 'http://localhost:1204/admin/logout',
+        REGISTE: 'http://localhost:1204/admin/registe',
+        VERIFY: 'http://localhost:1204/verify/code',
+        CHECKACCOUNT: 'http://localhost:1204/admin/checkAccount',
+        CHANGEPASSWORD: 'http://localhost:1204/admin/changePassword'
     }
 };
 

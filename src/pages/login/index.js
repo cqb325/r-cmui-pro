@@ -79,6 +79,10 @@ class Login extends React.Component {
         }
 
         await this.props.auth.login(params);
+        // 当前页面是login页面登录成功后跳转至首页
+        if (this.props.from === '/login') {
+            this.props.routing.push('/');
+        }
     }
 
     render () {
@@ -122,7 +126,7 @@ class Login extends React.Component {
                             <CheckBox label='记住用户名' checked ref={(f) => this.remember = f}/>
                         </span>
                         <span className='pull-right'>
-                            <a className='text-link'>忘记密码?</a>
+                            <a className='text-link' href='#/forgetPassword'>忘记密码?</a>
                         </span>
                     </Row>
                     <Row>

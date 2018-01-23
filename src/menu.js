@@ -15,6 +15,10 @@ export default [
         {text: '404', link: 'errors/error404'},
         {text: '500', link: 'errors/error500'}
     ]},
+    {text: '结果页', icon: 'key', children: [
+        {text: '成功', link: 'result/success'},
+        {text: '失败', link: 'result/error'}
+    ]},
     {text: '系统监控', icon: 'code', children: [
         {text: '主机监控', link: 'monitor/host'}
     ]},

@@ -21,7 +21,10 @@ const MonitorHost = asyncComponent(() => import('./pages/monitor/host'));
 const NodeManager = asyncComponent(() => import('./pages/nodeManager/index'));
 const Graph = asyncComponent(() => import('./pages/graph/index'));
 const Login = asyncComponent(() => import('./pages/login/index'));
+const Success = asyncComponent(() => import('./pages/result/success'));
+const ErrorPage = asyncComponent(() => import('./pages/result/error'));
 export const Register = asyncComponent(() => import('./pages/register/index'));
+export const FindPassword = asyncComponent(() => import('./pages/findPassword/index'));
 
 export const AppRoute = <Route key='app' path='/' component={APP} />;
 
@@ -41,6 +44,9 @@ routers.push(<Route key='list' path='/monitor/host' component={MonitorHost} />);
 routers.push(<Route key='futbol-o' path='/nodeManager/index' component={NodeManager} />);
 routers.push(<Route key='graph' path='/graph/index' component={Graph} />);
 routers.push(<Route key='login' path='/login' component={Login} />);
+
+routers.push(<Route key='success' path='/result/success' component={Success} />);
+routers.push(<Route key='error' path='/result/error' component={ErrorPage} />);
 
 // export const LoginRoute = <Route key='login' path='/login' component={Login} />;
 
