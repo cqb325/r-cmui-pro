@@ -23,6 +23,8 @@ const Graph = asyncComponent(() => import('./pages/graph/index'));
 const Login = asyncComponent(() => import('./pages/login/index'));
 const Success = asyncComponent(() => import('./pages/result/success'));
 const ErrorPage = asyncComponent(() => import('./pages/result/error'));
+const DetailsBase = asyncComponent(() => import('./pages/details/base'));
+const DetailsFormDetails = asyncComponent(() => import('./pages/details/formDetails'));
 export const Register = asyncComponent(() => import('./pages/register/index'));
 export const FindPassword = asyncComponent(() => import('./pages/findPassword/index'));
 
@@ -47,6 +49,8 @@ routers.push(<Route key='login' path='/login' component={Login} />);
 
 routers.push(<Route key='success' path='/result/success' component={Success} />);
 routers.push(<Route key='error' path='/result/error' component={ErrorPage} />);
+routers.push(<Route key='detailsBase' path='/details/base' component={DetailsBase} />);
+routers.push(<Route key='DetailsFormDetails' path='/details/formDetails' component={DetailsFormDetails} />);
 
 // export const LoginRoute = <Route key='login' path='/login' component={Login} />;
 

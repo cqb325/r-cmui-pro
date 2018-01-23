@@ -19,6 +19,10 @@ export default [
         {text: '成功', link: 'result/success'},
         {text: '失败', link: 'result/error'}
     ]},
+    {text: '详情页', icon: 'info-circle', children: [
+        {text: '基础详情', link: 'details/base'},
+        {text: '表单详情', link: 'details/formDetails'}
+    ]},
     {text: '系统监控', icon: 'code', children: [
         {text: '主机监控', link: 'monitor/host'}
     ]},
