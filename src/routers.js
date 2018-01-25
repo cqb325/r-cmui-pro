@@ -17,6 +17,7 @@ const FormTableFormSuccess = asyncComponent(() => import('./pages/form/tableForm
 const StepForm = asyncComponent(() => import('./pages/form/stepForm'));
 const Error404 = asyncComponent(() => import('./pages/errors/error404'));
 const Error500 = asyncComponent(() => import('./pages/errors/error500'));
+const Notification = asyncComponent(() => import('./pages/errors/notification'));
 const MonitorHost = asyncComponent(() => import('./pages/monitor/host'));
 const NodeManager = asyncComponent(() => import('./pages/nodeManager/index'));
 const Graph = asyncComponent(() => import('./pages/graph/index'));
@@ -42,6 +43,7 @@ routers.push(<Route key='FormTableFormSuccess' path='/form/tableFormSuccess' com
 routers.push(<Route key='StepForm' path='/form/stepForm' component={StepForm} />);
 routers.push(<Route key='Error404' path='/errors/error404' component={Error404} />);
 routers.push(<Route key='Error500' path='/errors/error500' component={Error500} />);
+routers.push(<Route key='Notification' path='/errors/notification' component={Notification} />);
 routers.push(<Route key='list' path='/monitor/host' component={MonitorHost} />);
 routers.push(<Route key='futbol-o' path='/nodeManager/index' component={NodeManager} />);
 routers.push(<Route key='graph' path='/graph/index' component={Graph} />);

@@ -13,7 +13,8 @@ export default [
     ]},
     {text: '错误页', icon: 'exclamation-triangle', children: [
         {text: '404', link: 'errors/error404'},
-        {text: '500', link: 'errors/error500'}
+        {text: '500', link: 'errors/error500'},
+        {text: '通知', link: 'errors/notification'}
     ]},
     {text: '结果页', icon: 'key', children: [
         {text: '成功', link: 'result/success'},
