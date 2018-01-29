@@ -17,7 +17,9 @@ export default class Auth {
 
     constructor () {
         const token = sessionStorage.getItem('cmui-login-token');
-        this.checkValid(token);
+        if (token) {
+            this.checkValid(token);
+        }
     }
 
     async checkValid (token) {

@@ -1,37 +1,3 @@
-// import React, { Component } from 'react';
-// import { inject, observer } from 'mobx-react';
-// import logo from './logo.svg';
-// import './App.css';
-
-// @inject('routing')
-// @observer
-// class App extends Component {
-//   displayName = 'App';
-
-//   goto = () => {
-//       const { push } = this.props.routing;
-//       push('/list');
-//   }
-
-//   render () {
-//       return (
-//           <div className='App'>
-//               <header className='App-header'>
-//                   <img src={logo} className='App-logo' alt='logo' />
-//                   <h1 className='App-title'>Welcome to React</h1>
-//               </header>
-//               <p className='App-intro'>
-//                 To get started, edit <code>src/App.js</code> and save to reload.
-//               </p>
-//               <a onClick={this.goto}>asdasdasdasdas</a><br />
-//               <a href='#/charts'>charts</a>
-//           </div>
-//       );
-//   }
-// }
-
-// export default App;
-
 import React from 'react';
 import Layout from 'r-cmui/components/Layout';
 import Sider from 'r-cmui/components/Layout/Sider';
@@ -136,6 +102,8 @@ class App extends React.Component {
                         </Layout>
                     </Layout>
                 );
+            } else {
+                return <Login from={this.props.location.pathname} params={this.props.match.params}/>;
             }
         }
     }

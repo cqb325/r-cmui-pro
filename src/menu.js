@@ -30,7 +30,8 @@ export default [
     {
         text: '第三方扩展', icon: 'cubes', children: [
             {text: '节点管理', link: 'nodeManager/index'},
-            {text: '自定义Echarts', link: 'graph/index'}
+            {text: '自定义Echarts', link: 'graph/index'},
+            {text: '截屏', link: 'screenshot/index'}
         ]
     }
 ];
