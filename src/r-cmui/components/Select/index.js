@@ -17,6 +17,9 @@ import Input from '../Input/index';
 import FormControl from '../FormControl/index';
 import grids from '../utils/grids';
 import {fromJS} from 'immutable';
+import PinYin from '../utils/PinYin';
+import '../utils/PinYinDictFirstLetter';
+
 const getGrid = grids.getGrid;
 import './Select.less';
 
@@ -141,6 +144,24 @@ class Option extends BaseComponent {
     }
 }
 
+class Char extends React.Component {
+    displayName = 'Char';
+    
+    onClick = (e) => {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+        return false;
+    }
+
+    render () {
+        return <li className='cm-select-char' onClick={this.onClick}>{this.props.char.toUpperCase()}</li>;
+    }
+}
+
 /**
  * Select 类
  * @class Select
@@ -153,9 +174,10 @@ class Select extends BaseComponent {
         textField: 'text',
         valueField: 'id',
         sep: ',',
-        choiceText: '请选择',
+        choiceText: window.RCMUI_I18N['Select.choiceText'],
         active: false,
-        value: ''
+        value: '',
+        group: false
     };
 
     static propTypes = {
@@ -189,6 +211,12 @@ class Select extends BaseComponent {
          * @type {Boolean}
          */
         multi: PropTypes.bool,
+        /**
+         * 是否分组
+         * @attribute group
+         * @type {Boolean}
+         */
+        group: PropTypes.bool,
         /**
          * 自定义样式
          * @attribute style
@@ -229,11 +257,18 @@ class Select extends BaseComponent {
 
         const data = this._rebuildData(props.data, props.value, props.valueField);
         this.data = data || [];
+        if (props.group) {
+            if (props.groupData && typeof(props.groupData) === 'function') {
+                this.data = props.groupData(data);
+            } else {
+                this.data = this.letterGroupData(data);
+            }
+        }
 
         this.addState({
             value: props.value,
             active: props.active,
-            data,
+            data: this.data,
             filterKey: ''
         });
 
@@ -304,6 +339,45 @@ class Select extends BaseComponent {
         }
 
         return null;
+    }
+
+    /**
+     * 默认使用首字母分组
+     */
+    letterGroupData (data) {
+        const map = {};
+        data.forEach((item) => {
+            const letter = PinYin.getFirstLetter(item.text.charAt(0));
+            item._group = letter.toLowerCase();
+            if (map[letter]) {
+                map[letter].push(item);
+            } else {
+                map[letter] = [item];
+            }
+        });
+        
+        for (const k in map) {
+            if (/[A-Z]/.test(k)) {
+                const key = k.toLowerCase();
+                if (map[key]) {
+                    map[key] = map[key].concat(map[k]);
+                } else {
+                    map[key] = map[k];
+                }
+                delete map[k];
+            }
+        }
+
+        const chars = 'abcdefghijklmnopqrstuvwxyz'.split('');
+        let ret = [];
+        for (const k in chars) {
+            const key = chars[k];
+            const arr = map[key];
+            if (arr) {
+                ret = ret.concat(arr);
+            }
+        }
+        return ret;
     }
 
     /**
@@ -465,6 +539,7 @@ class Select extends BaseComponent {
                 onClick={this._selectItem}>{choiceText}</Option>);
         }
         this.text = [];
+        let char = '';
         data.forEach((item) => {
             const text = item[textField];
             const value = `${item[valueField]}`;
@@ -476,6 +551,13 @@ class Select extends BaseComponent {
                 html = substitute(optionsTpl, item);
             }
 
+            if (this.props.group) {
+                if (item._group !== char && show) {
+                    char = item._group;
+                    ret.push(<Char char={char} key={char}/>);
+                }
+            }
+
             ret.push(<Option
                 html={html}
                 key={value}
@@ -483,6 +565,7 @@ class Select extends BaseComponent {
                 item={item}
                 multi={multi}
                 show={show}
+                disabled={item.disabled}
                 itemBind={this.itemBind}
                 itemUnBind={this.itemUnBind}
                 onClick={this._selectItem}
@@ -635,9 +718,16 @@ class Select extends BaseComponent {
         this.orignData = data;
         const newData = this._rebuildData(data, val, valueField);
         this.data = newData;
+        if (this.props.group) {
+            if (this.props.groupData && typeof(this.props.groupData) === 'function') {
+                this.data = this.props.groupData(data);
+            } else {
+                this.data = this.letterGroupData(data);
+            }
+        }
         if (this._isMounted) {
             this.setState({
-                data: newData,
+                data: this.data,
                 value: val
             });
         }
@@ -708,10 +798,11 @@ class Select extends BaseComponent {
 
     componentWillUnmount () {
         this._isMounted = false;
+        this.lastSelectItem = null;
     }
 
     componentWillReceiveProps (nextProps) {
-        const value = nextProps.value;
+        const value = nextProps.value === 'undefined' ? '' : nextProps.value;
         if (value !== this.props.value && value !== this.state.value) {
             this.setState({ value });
         }

@@ -5,7 +5,7 @@ import fetch, {fetchText} from 'r-cmui/components/utils/fetch';
 useStrict(true);
 
 export default class Auth {
-    @observable userInfo = null;
+    @observable userInfo = {};
 
     @observable isFetching = false;
 
@@ -28,7 +28,7 @@ export default class Auth {
             this.setUserInfo(ret.user);
         } else {
             // sessionStorage.setItem('cmui-login-token', '');
-            this.setUserInfo(null);
+            // this.setUserInfo(null);
         }
     }
 

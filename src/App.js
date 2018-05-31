@@ -8,7 +8,8 @@ import Menu from 'r-cmui/components/Menu';
 import Nav from './Nav';
 import routers, {Register, FindPassword} from './routers';
 import Login from './pages/login';
-const {Header, Content} = Layout;
+import CustomFooter from './components/Footer';
+const {Header, Content, Footer} = Layout;
 const {Item, Divider} = Menu;
 
 import './index.less';
@@ -77,34 +78,37 @@ class App extends React.Component {
         } else if (current === '/login') {
             return <Login from={this.props.location.pathname} params={this.props.match.params}/>;
         } else {
-            if (this.props.auth.userInfo) {
-                return (
-                    <Layout className='app'>
-                        <Sider ref='sider'>
-                            <div className='text-center logo'>{this.state.collapse ? 'Pro' : 'RCMUI Pro'}</div>
-                            <Nav ref='nav'/>
-                        </Sider>
-                        <Layout style={{background: '#f0f2f5'}}>
-                            <Header>
-                                <FontIcon icon={this.state.collapse ? 'indent' : 'dedent'} className='menu-collapse' onClick={this.collapse}></FontIcon>
-                                <div className='pull-right'>
-                                    <Badge count={13}><FontIcon icon='bell-o' style={{fontSize: 17}}></FontIcon></Badge>
-                                    <Dropdown overlay={this.renderUserMenu()} align='bottomRight'>
-                                        <span id='username'>{this.props.auth.userInfo.nicename}</span>
-                                    </Dropdown>
-                                </div>
-                            </Header>
-                            <Content>
-                                <div className='main-container'>
-                                    {routers}
-                                </div>
-                            </Content>
-                        </Layout>
+            // if (this.props.auth.userInfo) {
+            return (
+                <Layout className='app'>
+                    <Sider ref='sider'>
+                        <div className='text-center logo'>{this.state.collapse ? 'Pro' : 'RCMUI Pro'}</div>
+                        <Nav ref='nav'/>
+                    </Sider>
+                    <Layout style={{background: '#f0f2f5'}}>
+                        <Header>
+                            <FontIcon icon={this.state.collapse ? 'indent' : 'dedent'} className='menu-collapse' onClick={this.collapse}></FontIcon>
+                            <div className='pull-right'>
+                                <Badge count={13}><FontIcon icon='bell-o' style={{fontSize: 17}}></FontIcon></Badge>
+                                <Dropdown overlay={this.renderUserMenu()} align='bottomRight'>
+                                    <span id='username'>{this.props.auth.userInfo.nicename}</span>
+                                </Dropdown>
+                            </div>
+                        </Header>
+                        <Content>
+                            <div className='main-container'>
+                                {routers}
+                            </div>
+                        </Content>
+                        <Footer>
+                            <CustomFooter/>
+                        </Footer>
                     </Layout>
-                );
-            } else {
-                return <Login from={this.props.location.pathname} params={this.props.match.params}/>;
-            }
+                </Layout>
+            );
+            // } else {
+            //     return <Login from={this.props.location.pathname} params={this.props.match.params}/>;
+            // }
         }
     }
 }

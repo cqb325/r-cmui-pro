@@ -61,8 +61,8 @@ class MessageBox extends BaseComponent {
         msg: '',
         visibility: false,
         type: 'info',
-        confirmText: '确 定',
-        cancelText: '取 消',
+        confirmText: window.RCMUI_I18N['MessageBox.confirmText'],
+        cancelText: window.RCMUI_I18N['MessageBox.cancelText'],
         confirmTheme: 'primary',
         cancelTheme: 'default',
         confirmIcon: 'check',
@@ -160,6 +160,9 @@ class MessageBox extends BaseComponent {
      * @return {[type]} [description]
      */
     hide () {
+        if (!this._isMounted) {
+            return false;
+        }
         velocity(this.container, 'fadeOut', { duration: 300 });
 
         if (this.props.onHide) {
@@ -203,6 +206,9 @@ class MessageBox extends BaseComponent {
      * @return {[type]}       [description]
      */
     show (msg, title) {
+        if (!this._isMounted) {
+            return false;
+        }
         this.panel.setTitleAndContent(this.state.title || title, this.state.msg || msg);
 
         if (!this.backdrop) {
@@ -219,7 +225,9 @@ class MessageBox extends BaseComponent {
         this.backdrop.style.display = 'block';
         let count = this.backdrop.getAttribute('data-count');
         count = count == null ? 1 : parseInt(count, 10) + 1;
-        this.backdrop.setAttribute('data-count', count);
+        if (this.container.style.display === 'none') {
+            this.backdrop.setAttribute('data-count', count);
+        }
         Dom.dom(Dom.query('body')).addClass('modal-open');
 
         window.setTimeout(() => {
@@ -265,6 +273,12 @@ class MessageBox extends BaseComponent {
 
         ReactDOM.render(<Panel ref={(ref) => { this.panel = ref; }} {...props}
             content={this.state.msg} />, this.container);
+
+        this._isMounted = true;
+    }
+
+    componentWillUnmount () {
+        this._isMounted = false;
     }
 
     render () {

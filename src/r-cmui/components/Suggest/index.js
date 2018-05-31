@@ -159,9 +159,10 @@ class Suggest extends BaseComponent {
         textField: 'text',
         valueField: 'id',
         sep: ',',
-        choiceText: '请选择',
+        choiceText: window.RCMUI_I18N['Select.choiceText'],
         active: false,
-        value: ''
+        value: '',
+        inputOption: false
     };
 
     static propTypes = {
@@ -224,7 +225,14 @@ class Suggest extends BaseComponent {
          * @attribute placeholder
          * @type {String}
          */
-        placeholder: PropTypes.string
+        placeholder: PropTypes.string,
+        /**
+         * 默写场景下输入的内容也可以作为上传的值，
+         * 开启改参数可以将输入的内容作为一个选项，进行选择
+         * @attribute inputOption
+         * @type {Boolean}
+         */
+        inputOption: PropTypes.bool
     };
 
     constructor (props) {
@@ -277,22 +285,35 @@ class Suggest extends BaseComponent {
      * @returns {*}
      * @private
      */
-    _rebuildData (data) {
+    _rebuildData (data, defaultValue, valueField) {
         if (!data) {
             return null;
         }
         // 生成一个新的数据， 防止后续操作影响到改数据
         data = fromJS(data).toJS();
 
-        // let defaultValues = defaultValue ? (defaultValue + '').split(this.sep) : [];
+        const defaultValues = defaultValue ? (`${defaultValue}`).split(this.sep) : [];
         if (Core.isArray(data)) {
             const one = data[0];
             if (Core.isString(one)) {
                 return data.map((item) => {
-                    return {id: item, text: item};
+                    const ret = {id: item, text: item};
+                    defaultValues.forEach((a) => {
+                        if (a === item) {
+                            this.selectItems[item] = item;
+                        }
+                    });
+                    return ret;
                 }, this);
             }
             if (Core.isObject(one)) {
+                data.forEach((item) => {
+                    defaultValues.forEach((a) => {
+                        if (a === `${item[valueField]}`) {
+                            this.selectItems[item[valueField]] = item[this.props.textField];
+                        }
+                    });
+                });
                 return data;
             }
 
@@ -302,6 +323,11 @@ class Suggest extends BaseComponent {
             const ret = [];
             for (const id in data) {
                 const item = {id, text: data[id]};
+                defaultValues.forEach((a) => {
+                    if (a === id) {
+                        this.selectItems[id] = data[id];
+                    }
+                });
                 ret.push(item);
             }
 
@@ -355,6 +381,11 @@ class Suggest extends BaseComponent {
     }
 
     filter = (e) => {
+        if (this.selectItems[this.lastFilterKey]) {
+            delete this.selectItems[this.lastFilterKey];
+        }
+        
+        this.lastFilterKey = e.target.value;
         if (this.props.onFilter) {
             this.props.onFilter(e.target.value);
         }
@@ -371,10 +402,7 @@ class Suggest extends BaseComponent {
         // 空选项
         if (option.isEmptyOption()) {
             if (!this.props.multi) {
-                if (this.lastSelectItem) {
-                    this.lastSelectItem.setActive(false);
-                }
-                this.lastSelectItem = option;
+                this.selectItems = {};
                 this.hideOptions();
             }
         } else {
@@ -389,7 +417,7 @@ class Suggest extends BaseComponent {
                     this.lastSelectItem.setActive(false);
                 }
                 this.lastSelectItem = option;
-                this.selectItems = [option.getText()];
+                this.selectItems = {[option.getValue()]: [option.getText()]};
                 this.hideOptions();
             }
         }
@@ -430,6 +458,14 @@ class Suggest extends BaseComponent {
             this.setState({value});
         }
         if (value != undefined) {
+            const vls = value.split(this.props.sep);
+            vls.forEach((vl) => {
+                for (const id in this.options) {
+                    if (id === vl) {
+                        this.selectItems[id] = this.options[id].getText();
+                    }
+                }
+            });
             this.setState({value: `${value}`});
         }
     }
@@ -456,6 +492,20 @@ class Suggest extends BaseComponent {
                 multi={multi}
                 show={true}
                 onClick={this._selectItem}>{choiceText}</Option>);
+        }
+        if (this.props.inputOption) {
+            const v = this.filterInputField.getValue();
+            if (v) {
+                const active = this.isActive(v);
+                ret.push(<Option key='inputOption'
+                    itemBind={this.itemBind}
+                    itemUnBind={this.itemUnBind}
+                    value={v}
+                    multi={multi}
+                    show={true}
+                    active={active}
+                    onClick={this._selectItem}>{v}</Option>);
+            }
         }
         data.forEach((item) => {
             const text = item[textField];
@@ -513,7 +563,7 @@ class Suggest extends BaseComponent {
         if (this.props.filter && e.target == ReactDOM.findDOMNode(this.filterInputField)) {
             return;
         }
-        if (Dom.closest(e.target, '.cm-tag')) {
+        if (e.target && Dom.closest(e.target, '.cm-tag')) {
             return;
         }
         if (this.state.active && !this.props.multi) {
@@ -582,7 +632,7 @@ class Suggest extends BaseComponent {
     setData (data, value) {
         const valueField = this.props.valueField;
         if (value !== undefined) {
-            this.text = [];
+            this.selectItems = {};
         }
         const val = value === undefined ? this.state.value : value;
         this.orignData = data;
@@ -642,7 +692,7 @@ class Suggest extends BaseComponent {
     }
 
     render () {
-        let {className, style, grid, multi} = this.props;
+        let {className, style, multi} = this.props;
         className = classNames('cm-select', {
             'cm-select-active': this.state.active,
             'cm-select-disabled': this.state.disabled,

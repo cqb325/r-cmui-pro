@@ -86,9 +86,10 @@ class DateRange extends BaseComponent {
             this.setState({
                 start,
                 end
+            }, () => {
+                this.updateRange();
+                this._selectDate();
             });
-            this.updateRange();
-            this._selectDate();
         } else {
             const start = moment();
             const end = moment();
@@ -154,7 +155,7 @@ class DateRange extends BaseComponent {
         velocity(ele, 'fadeIn', {duration: 300});
         this.updateRange();
         if (!this.state.visibility) {
-            super.show();
+            this.setState({ visibility: true });
             this.bindClickAway();
         }
     }
@@ -170,7 +171,7 @@ class DateRange extends BaseComponent {
             delay: 200,
             duration: 300,
             complete: () => {
-                super.hide();
+                this.setState({ visibility: false });
                 this.unbindClickAway();
             }
         });
@@ -558,7 +559,7 @@ class DateRange extends BaseComponent {
         const {clear} = this.props;
         if (clear) {
             return <span className='pull-right'>
-                <Button theme='info' size='small' raised onClick={this.clear}>清除</Button>
+                <Button theme='info' size='small' raised onClick={this.clear}>{window.RCMUI_I18N['DateRange.clear']}</Button>
             </span>;
         } else {
             return null;

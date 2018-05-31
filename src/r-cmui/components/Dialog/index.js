@@ -58,8 +58,8 @@ class Dialog extends BaseComponent {
 
     static defaultProps = {
         visibility: false,
-        okButtonText: '确 定',
-        cancelButtonText: '取 消',
+        okButtonText: window.RCMUI_I18N['Dialog.okButtonText'],
+        cancelButtonText: window.RCMUI_I18N['Dialog.cancelButtonText'],
         hasCloseBtn: true,
         useDefaultFooters: true,
         okButtonTheme: 'primary',
@@ -172,6 +172,9 @@ class Dialog extends BaseComponent {
     }
 
     close = () => {
+        if (!this._isMounted) {
+            return false;
+        }
         this.setState({
             visibility: false
         });
@@ -211,6 +214,9 @@ class Dialog extends BaseComponent {
      * @param orign 打开dialog的元素
      */
     open (orign) {
+        if (!this._isMounted) {
+            return false;
+        }
         this.setState({
             visibility: true
         });
@@ -229,7 +235,9 @@ class Dialog extends BaseComponent {
         this.backdrop.style.display = 'block';
         let count = this.backdrop.getAttribute('data-count');
         count = count == null ? 1 : parseInt(count, 10) + 1;
-        this.backdrop.setAttribute('data-count', count);
+        if (this.container.style.display === 'none') {
+            this.backdrop.setAttribute('data-count', count);
+        }
         Dom.dom(Dom.query('body')).addClass('modal-open');
 
         window.setTimeout(() => {
@@ -350,6 +358,11 @@ class Dialog extends BaseComponent {
         ReactDOM.render(<Panel ref={(ref) => { this.panel = ref; }} {...props}>
             {this.props.children}
         </Panel>, this.container);
+        this._isMounted = true;
+    }
+
+    componentWillUnmount () {
+        this._isMounted = false;
     }
 
     componentWillReceiveProps (nextProps) {

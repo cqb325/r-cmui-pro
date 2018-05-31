@@ -1,4 +1,4 @@
-export default async (url = '', data = {}, type = 'GET', fail) => {
+async function myFetch (url = '', data = {}, type = 'GET', options) {
     type = type.toUpperCase();
     let dataStr = ''; // 数据拼接字符串
     Object.keys(data).forEach(key => {
@@ -16,64 +16,66 @@ export default async (url = '', data = {}, type = 'GET', fail) => {
         }
     }
 
+    options = options || {};
+    const headers = options.headers || {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    };
+
     const requestConfig = {
         method: type,
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-        },
+        headers,
         mode: 'cors',
         cache: 'force-cache',
         credentials: 'include'
     };
 
     if (type == 'POST') {
-        requestConfig.body = dataStr;
+        if (headers['Content-Type'].indexOf('application/json') > -1) {
+            requestConfig.body = JSON.stringify(data);
+        } else {
+            requestConfig.body = dataStr;
+        }
     }
     try {
         const response = await fetch(url, requestConfig);
-        const responseJson = await response.json();
+        let responseJson;
+        if (response) {
+            if (headers['Accept'] === 'application/json') {
+                responseJson = await response.json();
+            }
+            if (headers['Accept'] === 'text/xml') {
+                responseJson = await response.xml();
+            }
+            if (headers['Accept'] === 'text/plain') {
+                responseJson = await response.text();
+            }
+        }
         return responseJson;
     } catch (error) {
         console.error(error);
-        if (fail) {
-            fail(error);
+        if (options.fail) {
+            options.fail(error);
         }
     }
-};
+}
 
+export default myFetch;
 
-export async function fetchText (url = '', data = {}) {
-    let dataStr = ''; // 数据拼接字符串
-    Object.keys(data).forEach(key => {
-        dataStr += `${key}=${data[key]}&`;
+export async function fetchText (url = '', data = {}, type = 'GET', options) {
+    options = options || {};
+    Object.assign(options.headers, {
+        'Accept': 'text/plain',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     });
-    dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'));
-    if (dataStr !== '') {
-        url = `${url}?${dataStr}`;
-    }
-    if (url.indexOf('?') > -1) {
-        url += `&_=${new Date().getTime()}`;
-    } else {
-        url += `?_=${new Date().getTime()}`;
-    }
+    return await myFetch(url, data, type, options);
+}
 
-    const requestConfig = {
-        method: 'GET',
-        headers: {
-            'Accept': 'text/plain',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-        },
-        mode: 'cors',
-        cache: 'force-cache',
-        credentials: 'include'
-    };
-
-    try {
-        const response = await fetch(url, requestConfig);
-        const responseText = await response.text();
-        return responseText;
-    } catch (error) {
-        console.error(error);
-    }
+export async function fetchXML (url = '', data = {}, type = 'GET', options) {
+    options = options || {};
+    Object.assign(options.headers, {
+        'Accept': 'text/xml',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    });
+    return await myFetch(url, data, type, options);
 }

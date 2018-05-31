@@ -119,20 +119,26 @@ class SimpleListPage extends React.Component {
      */
     search = async (page, pageSize) => {
         this.setState({spinning: true});
-        const ret = await fetch(this.props.action, this.getSearchParams(page, pageSize), 'GET', (error) => {
-            console.log('get Table Data error!', error);
-        });
-        if (ret) {
-            this.refs.table.setData(ret.data);
-            if (this.refs.pagination) {
-                this.refs.pagination.update({total: ret.total, current: ret.pageNum, pageSize: ret.pageSize});
-            }
+        try {
+            const ret = await fetch(this.props.action, this.getSearchParams(page, pageSize), 'GET', {
+                fail: (error) => {
+                    console.log(window.RCMUI_I18N['SimpleListPage.fetchDataError'], error);
+                }
+            });
+            if (ret) {
+                this.refs.table.setData(ret.data);
+                if (this.refs.pagination) {
+                    this.refs.pagination.update({total: ret.total, current: ret.pageNum, pageSize: ret.pageSize});
+                }
             
-            this.setState({spinning: false});
+                this.setState({spinning: false});
             
-            if (this.props.afterRequest) {
-                this.props.afterRequest(ret.data);
+                if (this.props.afterRequest) {
+                    this.props.afterRequest(ret.data);
+                }
             }
+        } catch (e) {
+            console.log(e);
         }
     }
 
@@ -234,7 +240,7 @@ class SimpleListPage extends React.Component {
 
     render () {
         return (
-            <SVGSpin spinning={this.state.spinning}>
+            <SVGSpin spinning={this.state.spinning} className={this.props.className}>
                 <Table ref='table' columns={this.props.columns} onSort={this.sortColumn} data={this.props.data || []} bordered={this.props.bordered} hover striped />
 
                 <div className='cm-row'>

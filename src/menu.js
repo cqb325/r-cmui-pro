@@ -24,6 +24,9 @@ export default [
         {text: '基础详情', link: 'details/base'},
         {text: '表单详情', link: 'details/formDetails'}
     ]},
+    {text: '欢迎页', icon: 'info-circle', children: [
+        {text: '平台黑底介绍', link: 'welcome/platform-black-intro'}
+    ]},
     {text: '系统监控', icon: 'code', children: [
         {text: '主机监控', link: 'monitor/host'}
     ]},

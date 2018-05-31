@@ -22,14 +22,14 @@ class Label extends React.Component {
             this.setState({value: nextProps.value});
         }
     }
-
+    
     format (v) {
         if (this.props.format) {
             return this.props.format(v);
         }
         return v;
     }
-    
+
     render () {
         const className = classNames('cm-formcontrol-label', this.props.className);
         return (

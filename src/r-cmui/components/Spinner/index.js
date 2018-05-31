@@ -27,8 +27,15 @@ class Spinner extends BaseComponent {
 
     constructor (props) {
         super(props);
+        let defaultValue = props.value;
+        if (props.min) {
+            defaultValue = Math.max(defaultValue, props.min);
+        }
+        if (props.max) {
+            defaultValue = Math.min(defaultValue, props.max);
+        }
         this.addState({
-            value: props.value
+            value: defaultValue
         });
     }
 
@@ -142,7 +149,7 @@ class Spinner extends BaseComponent {
     componentWillReceiveProps (nextProps) {
         const value = nextProps.value;
         if (value !== this.props.value && value !== this.state.value) {
-            this.setState({ value });
+            this.setValue(value);
         }
     }
 
